@@ -25,11 +25,11 @@ defmodule Servy.Handler do
   def log(conv), do: IO.inspect(conv)
 
   def route(%{method: "GET", path: "/wildthings"} = conv) do
-    %{conv | resp_body: "Bears, Lions, Tigers"}
+    %{conv | status: 200, resp_body: "Bears, Lions, Tigers"}
   end
 
   def route(%{method: "GET", path: "/bears"} = conv) do
-    %{conv | resp_body: "Teddy, Smokey, Paddington"}
+    %{conv | status: 200, resp_body: "Teddy, Smokey, Paddington"}
   end
 
   def route(%{path: _} = conv) do
