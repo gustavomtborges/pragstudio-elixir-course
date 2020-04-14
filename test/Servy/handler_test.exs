@@ -81,4 +81,14 @@ defmodule Servy.HandlerTest do
     result = req |> handle()
     assert result == expected
   end
+
+  test "rewrite if path is a query parameter" do
+    %{path: result} =
+      %{
+        path: "/bears?id=1"
+      }
+      |> rewrite_path
+
+    assert result == "/bears/1"
+  end
 end

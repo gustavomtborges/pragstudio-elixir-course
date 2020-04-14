@@ -1,10 +1,11 @@
 defmodule Servy.Handler do
   def handle(request) do
     request
-    |> parse()
-    |> log()
-    |> route()
-    |> format_response()
+    |> parse
+    |> rewrite_path
+    |> log
+    |> route
+    |> format_response
   end
 
   def parse(request) do
@@ -21,6 +22,12 @@ defmodule Servy.Handler do
       resp_body: ""
     }
   end
+
+  def rewrite_path(%{path: "/bears?id=" <> id} = conv) do
+    %{conv | path: "/bears/#{id}"}
+  end
+
+  def rewrite_path(conv), do: conv
 
   def log(conv), do: IO.inspect(conv)
 
