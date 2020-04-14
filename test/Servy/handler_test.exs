@@ -1,6 +1,7 @@
 defmodule Servy.HandlerTest do
   use ExUnit.Case
   import Servy.Handler
+  alias Servy.Conv
 
   test "response from path /noexits" do
     req = """
@@ -83,8 +84,8 @@ defmodule Servy.HandlerTest do
   end
 
   test "rewrite if path is a query parameter" do
-    %{path: result} =
-      %{
+    %Conv{path: result} =
+      %Conv{
         path: "/bears?id=1"
       }
       |> rewrite_path
@@ -114,14 +115,14 @@ defmodule Servy.HandlerTest do
   end
 
   test "return stauts 404 if file doesnt exisit" do
-    result = handle_file({:error, :enoent}, %{status: nil, resp_body: ""})
-    expected = %{status: 404, resp_body: "File not found!"}
+    result = handle_file({:error, :enoent}, %Conv{})
+    expected = %Conv{status: 404, resp_body: "File not found!"}
     assert result == expected
   end
 
   test "return status 500 if get a file error" do
-    result = handle_file({:error, :eacces}, %{status: nil, resp_body: ""})
-    expected = %{status: 500, resp_body: "File error: eacces"}
+    result = handle_file({:error, :eacces}, %Conv{})
+    expected = %Conv{status: 500, resp_body: "File error: eacces"}
     assert result == expected
   end
 end
