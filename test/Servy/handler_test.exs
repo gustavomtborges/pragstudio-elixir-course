@@ -61,4 +61,24 @@ defmodule Servy.HandlerTest do
     result = req |> handle()
     assert result == expected
   end
+
+  test "response from path /bears/1" do
+    req = """
+    GET /bears/1 HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+    """
+
+    expected = """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 6
+
+    Bear 1
+    """
+
+    result = req |> handle()
+    assert result == expected
+  end
 end

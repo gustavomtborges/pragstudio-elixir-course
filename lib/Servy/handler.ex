@@ -32,6 +32,10 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "Teddy, Smokey, Paddington"}
   end
 
+  def route(%{method: "GET", path: "/bears/" <> id} = conv) do
+    %{conv | status: 200, resp_body: "Bear #{id}"}
+  end
+
   def route(%{path: _} = conv) do
     %{conv | status: 404, resp_body: "No #{conv.path} here!"}
   end
