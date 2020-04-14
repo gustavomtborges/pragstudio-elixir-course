@@ -3,7 +3,6 @@ defmodule Servy.Handler do
     request
     |> parse
     |> rewrite_path
-    |> log
     |> route
     |> format_response
   end
@@ -43,8 +42,27 @@ defmodule Servy.Handler do
     %{conv | status: 200, resp_body: "Bear #{id}"}
   end
 
+  def route(%{method: "GET", path: "/about"} = conv) do
+    Path.expand("../../pages", __DIR__)
+    |> Path.join("about.html")
+    |> File.read()
+    |> handle_file(conv)
+  end
+
   def route(%{path: _} = conv) do
     %{conv | status: 404, resp_body: "No #{conv.path} here!"}
+  end
+
+  def handle_file({:ok, content}, conv) do
+    %{conv | status: 200, resp_body: content}
+  end
+
+  def handle_file({:error, :enoent}, conv) do
+    %{conv | status: 404, resp_body: "File not found!"}
+  end
+
+  def handle_file({:error, reason}, conv) do
+    %{conv | status: 500, resp_body: "File error: #{reason}"}
   end
 
   def format_response(conv) do

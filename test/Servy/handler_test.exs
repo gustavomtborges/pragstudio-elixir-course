@@ -91,4 +91,37 @@ defmodule Servy.HandlerTest do
 
     assert result == "/bears/1"
   end
+
+  test "response if path is /about" do
+    req = """
+    GET /about HTTP/1.1
+    Host: example.com
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+    """
+
+    expected = """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 10
+
+    <p>Hi</p>
+
+    """
+
+    result = req |> handle
+    assert result == expected
+  end
+
+  test "return stauts 404 if file doesnt exisit" do
+    result = handle_file({:error, :enoent}, %{status: nil, resp_body: ""})
+    expected = %{status: 404, resp_body: "File not found!"}
+    assert result == expected
+  end
+
+  test "return status 500 if get a file error" do
+    result = handle_file({:error, :eacces}, %{status: nil, resp_body: ""})
+    expected = %{status: 500, resp_body: "File error: eacces"}
+    assert result == expected
+  end
 end
